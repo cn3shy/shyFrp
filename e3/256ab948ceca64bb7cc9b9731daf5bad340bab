@@ -1,0 +1,39 @@
+src/main/java/io/github/satxm/mcwifipnp/client/WorldOptionsScreenNew.java
+  s_4f25baa0095ce4::t_24e6fc6e7cbdfb 182
+  s_4f25baa0095ce4::t_59ad6d7c3c3a27 164
+  s_4f25baa0095ce4::t_897855e2aec69f 12-13
+  s_4f25baa0095ce4::t_722f0cb60230e2 3-5
+  s_4f25baa0095ce4::t_bd850341c06fae 256
+  s_4f25baa0095ce4::t_bcd65bc72e1cbd 695-696
+  s_4f25baa0095ce4::t_a60f3324ecf441 103-117
+  s_4f25baa0095ce4::t_8eeb4994cd280f 497-666
+src/main/resources/assets/mcwifipnp/lang/en_us.json
+  s_4f25baa0095ce4::t_351a84c6fe4f6e 53-67
+src/main/java/io/github/satxm/mcwifipnp/frp/FrpProcessManager.java
+  s_4f25baa0095ce4::t_6b813850b78926 119
+  s_4f25baa0095ce4::t_157383aea90b8e 300
+  s_4f25baa0095ce4::t_108fd8d89d3c4f 1-118,120-299,301-307
+src/main/java/io/github/satxm/mcwifipnp/frp/FrpConfig.java
+  s_4f25baa0095ce4::t_1f278fc2982e2c 1-89
+src/main/resources/assets/mcwifipnp/lang/zh_cn.json
+  s_4f25baa0095ce4::t_fe9efbb3ba382d 53-67
+src/main/java/io/github/satxm/mcwifipnp/MCWiFiPnPUnit.java
+  s_4f25baa0095ce4::t_91962de560eaa6 9
+  s_4f25baa0095ce4::t_ac121da5aa966e 68-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e3256ab948ceca64bb7cc9b9731daf5bad340bab",
+  "prompts": {},
+  "sessions": {
+    "s_4f25baa0095ce4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "640c2459-92dd-41a9-94d8-e1f6821c2d44",
+        "model": "deepseek-flash"
+      },
+      "human_author": "sunshuai <sunshuai@pansoft.com>"
+    }
+  }
+}
