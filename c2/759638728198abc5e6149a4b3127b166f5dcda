@@ -1,0 +1,19 @@
+.github/workflows/release.yml
+  s_4f25baa0095ce4::t_87d712f9d84f39 1-62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c2759638728198abc5e6149a4b3127b166f5dcda",
+  "prompts": {},
+  "sessions": {
+    "s_4f25baa0095ce4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "640c2459-92dd-41a9-94d8-e1f6821c2d44",
+        "model": "deepseek-flash"
+      },
+      "human_author": "sunshuai <sunshuai@pansoft.com>"
+    }
+  }
+}
