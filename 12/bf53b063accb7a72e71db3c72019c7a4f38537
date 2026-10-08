@@ -1,0 +1,19 @@
+docs/superpowers/specs/2026-10-08-frp-section-design.md
+  s_4f25baa0095ce4::t_e1b41b42a774bb 1-142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "12bf53b063accb7a72e71db3c72019c7a4f38537",
+  "prompts": {},
+  "sessions": {
+    "s_4f25baa0095ce4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "640c2459-92dd-41a9-94d8-e1f6821c2d44",
+        "model": "deepseek-flash"
+      },
+      "human_author": "sunshuai <sunshuai@pansoft.com>"
+    }
+  }
+}
