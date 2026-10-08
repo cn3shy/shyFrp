@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import com.mojang.brigadier.CommandDispatcher;
 
 import io.github.satxm.mcwifipnp.commands.*;
+import io.github.satxm.mcwifipnp.frp.FrpProcessManager;
 import io.github.satxm.mcwifipnp.network.UPnPModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
@@ -64,6 +65,8 @@ public class MCWiFiPnPUnit {
 	public static void onServerStopping(MinecraftServer server) {
 		if (!server.isDedicatedServer()) {
 			UPnPModule.stop(server);
+			// 世界退出时清理 frpc 进程
+			FrpProcessManager.getInstance().stop();
 		}
 	}
 
