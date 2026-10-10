@@ -1,6 +1,5 @@
 package io.github.satxm.mcwifipnp.client;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
@@ -102,16 +101,9 @@ public class WorldOptionsScreenNew extends Screen implements HasGamemasterPermis
 
 	// ---- FRP 穿透分区 ----
 
-	private static final int FRP_LOG_LINES = 8;
-
-	private EditBox frpcPathEdit;
-	private EditBox frpTokenEdit;
-	private EditBox frpTunnelIdEdit;
 	private CycleButton<Boolean> frpAutoStartButton;
 	private Button frpToggleButton;
 	private StringWidget frpStatusWidget;
-	private final StringWidget[] frpLogLines = new StringWidget[FRP_LOG_LINES];
-	private long frpLogVersion = -1;
 	private boolean frpLastRunning;
 	private String frpLastError;
 
@@ -179,7 +171,7 @@ public class WorldOptionsScreenNew extends Screen implements HasGamemasterPermis
 
 		this.layout.visitWidgets(this::addRenderableWidget);
 		this.repositionElements();
-		this.updateFrpWidgets(true);
+		this.updateFrpWidgets();
 	}
 
 	protected void applyGeneralChanges(final IntegratedServer singleplayerServer) {
@@ -497,8 +489,6 @@ public class WorldOptionsScreenNew extends Screen implements HasGamemasterPermis
 	// ---- FRP 穿透分区 ----
 
 	private void frpOptions(final LinearLayout content) {
-		FrpConfig frpCfg = FrpConfig.get();
-
 		GridLayout grid = content.addChild(new GridLayout());
 		grid.defaultCellSetting().alignHorizontallyCenter();
 		RowHelper rowHelper = grid.columnSpacing(8).rowSpacing(4).createRowHelper(2);
@@ -510,58 +500,11 @@ public class WorldOptionsScreenNew extends Screen implements HasGamemasterPermis
 						ChatFormatting.BOLD), this.font)
 				.alwaysShowBorder(false).backgroundFill(BackgroundFill.ON_FOCUS).build(), 2);
 
-		// frpc 路径
-		this.frpcPathEdit = new EditBox(this.font, 308, 20, Component.translatable("mcwifipnp.frp.path"));
-		this.frpcPathEdit.setMaxLength(512);
-		this.frpcPathEdit.setValue(frpCfg.frpcPath);
-		this.frpcPathEdit.setTooltip(Tooltip.create(Component.translatable("mcwifipnp.frp.path.info")));
-		this.frpcPathEdit.setResponder(value -> {
-			FrpConfig.get().frpcPath = value;
-			FrpConfig.get().save();
-			this.updateFrpWidgets(true);
-		});
-		LinearLayout frpcPathRow = LinearLayout.vertical().spacing(4);
-		frpcPathRow.addChild(new StringWidget(Component.translatable("mcwifipnp.frp.path"), this.font));
-		frpcPathRow.addChild(this.frpcPathEdit);
-		rowHelper.addChild(frpcPathRow, 2);
-
-		// 访问密钥（打码显示）
-		this.frpTokenEdit = new EditBox(this.font, 308, 20, Component.translatable("mcwifipnp.frp.token"));
-		this.frpTokenEdit.setMaxLength(256);
-		this.frpTokenEdit.setValue(frpCfg.token);
-		this.frpTokenEdit.setTooltip(Tooltip.create(Component.translatable("mcwifipnp.frp.token.info")));
-		this.frpTokenEdit.addFormatter(
-				(value, cursorPos) -> Component.literal("●".repeat(value.length())).getVisualOrderText());
-		this.frpTokenEdit.setResponder(value -> {
-			FrpConfig.get().token = value;
-			FrpConfig.get().save();
-			this.updateFrpWidgets(true);
-		});
-		LinearLayout tokenRow = LinearLayout.vertical().spacing(4);
-		tokenRow.addChild(new StringWidget(Component.translatable("mcwifipnp.frp.token"), this.font));
-		tokenRow.addChild(this.frpTokenEdit);
-		rowHelper.addChild(tokenRow, 2);
-
-		// 隧道 ID
-		this.frpTunnelIdEdit = new EditBox(this.font, 308, 20, Component.translatable("mcwifipnp.frp.tunnelId"));
-		this.frpTunnelIdEdit.setMaxLength(64);
-		this.frpTunnelIdEdit.setValue(frpCfg.tunnelId);
-		this.frpTunnelIdEdit.setTooltip(Tooltip.create(Component.translatable("mcwifipnp.frp.tunnelId.info")));
-		this.frpTunnelIdEdit.setResponder(value -> {
-			FrpConfig.get().tunnelId = value;
-			FrpConfig.get().save();
-			this.updateFrpWidgets(true);
-		});
-		LinearLayout tunnelRow = LinearLayout.vertical().spacing(4);
-		tunnelRow.addChild(new StringWidget(Component.translatable("mcwifipnp.frp.tunnelId"), this.font));
-		tunnelRow.addChild(this.frpTunnelIdEdit);
-		rowHelper.addChild(tunnelRow, 2);
-
 		// 自动启动开关 + 启动/停止按钮
-		this.frpAutoStartButton = CycleButton.onOffBuilder(frpCfg.autoStart)
+		this.frpAutoStartButton = CycleButton.onOffBuilder(FrpConfig.get().autoStartEnabled())
 				.withTooltip(state -> Tooltip.create(Component.translatable("mcwifipnp.frp.autoStart.info")))
 				.create(Component.translatable("mcwifipnp.frp.autoStart"), (cycleButton, autoStart) -> {
-					FrpConfig.get().autoStart = autoStart;
+					FrpConfig.get().setAutoStart(autoStart);
 					FrpConfig.get().save();
 				});
 		rowHelper.addChild(this.frpAutoStartButton);
@@ -572,12 +515,9 @@ public class WorldOptionsScreenNew extends Screen implements HasGamemasterPermis
 		// 状态指示
 		this.frpStatusWidget = rowHelper.addChild(new StringWidget(Component.empty(), this.font), 2);
 
-		// 日志区（最近 FRP_LOG_LINES 行，自动跟随）
-		LinearLayout logLines = LinearLayout.vertical().spacing(1);
-		for (int i = 0; i < FRP_LOG_LINES; i++) {
-			this.frpLogLines[i] = logLines.addChild(new StringWidget(Component.empty(), this.font));
-		}
-		rowHelper.addChild(logLines, 2);
+		// exe 与 args 由用户直接修改配置文件
+		rowHelper.addChild(new StringWidget(
+				Component.translatable("mcwifipnp.frp.configHint").withStyle(ChatFormatting.GRAY), this.font), 2);
 	}
 
 	private void toggleFrpc() {
@@ -585,18 +525,17 @@ public class WorldOptionsScreenNew extends Screen implements HasGamemasterPermis
 		if (manager.isRunning()) {
 			manager.stop();
 		} else {
-			String error = manager.start(FrpConfig.get());
+			String error = manager.start();
 			if (error != null) {
 				this.sendFrpMessage(Component.literal("[FRP] " + error).withStyle(ChatFormatting.RED));
 			}
 		}
-		this.updateFrpWidgets(true);
+		this.updateFrpWidgets();
 	}
 
 	/** 点「应用修改」后，若已发布局域网且开启自动启动，则拉起 frpc。 */
 	private void startFrpcIfNeeded(final @Nullable IntegratedServer singleplayerServer) {
-		FrpConfig frpCfg = FrpConfig.get();
-		if (!frpCfg.autoStart || singleplayerServer == null) {
+		if (!FrpConfig.get().autoStartEnabled() || singleplayerServer == null) {
 			return;
 		}
 		if (cfg.multiplayerScope != MultiplayerScope.LAN || !singleplayerServer.isPublished()) {
@@ -606,41 +545,22 @@ public class WorldOptionsScreenNew extends Screen implements HasGamemasterPermis
 		if (manager.isRunning()) {
 			return;
 		}
-		String error = manager.start(frpCfg);
+		String error = manager.start();
 		if (error != null) {
 			this.sendFrpMessage(Component.literal("[FRP] " + error).withStyle(ChatFormatting.RED));
 		}
 	}
 
-	/** 刷新 FRP 状态文本与日志区（force 时无条件刷新）。 */
-	private void updateFrpWidgets(final boolean force) {
+	/** 刷新 FRP 状态文本与启停按钮。 */
+	private void updateFrpWidgets() {
 		if (this.frpStatusWidget == null) {
 			return;
 		}
 		FrpProcessManager manager = FrpProcessManager.getInstance();
 
-		long version = manager.getVersion();
-		if (force || version != this.frpLogVersion) {
-			this.frpLogVersion = version;
-			List<String> lines = manager.getRecentLines(FRP_LOG_LINES);
-			int blank = FRP_LOG_LINES - lines.size();
-			for (int i = 0; i < FRP_LOG_LINES; i++) {
-				int lineIndex = i - blank;
-				Component text = Component.empty();
-				if (lineIndex >= 0) {
-					String line = lines.get(lineIndex);
-					if (line.length() > 200) {
-						line = line.substring(0, 200) + "…";
-					}
-					text = Component.literal(line).withStyle(ChatFormatting.GRAY);
-				}
-				this.frpLogLines[i].setMessage(text);
-			}
-		}
-
 		boolean running = manager.isRunning();
 		String lastError = manager.getLastError();
-		if (force || running != this.frpLastRunning || !Objects.equals(lastError, this.frpLastError)) {
+		if (running != this.frpLastRunning || !Objects.equals(lastError, this.frpLastError)) {
 			this.frpLastRunning = running;
 			this.frpLastError = lastError;
 			if (running) {
@@ -694,7 +614,7 @@ public class WorldOptionsScreenNew extends Screen implements HasGamemasterPermis
 	public void extractRenderState(final GuiGraphicsExtractor graphics, final int xm, final int ym, final float a) {
 		super.extractRenderState(graphics, xm, ym, a);
 		// 每帧刷新 FRP 状态与日志（内部有变化检测，无变化时几乎无开销）
-		this.updateFrpWidgets(false);
+		this.updateFrpWidgets();
 		graphics.blit(
 				RenderPipelines.GUI_TEXTURED, Screen.INWORLD_HEADER_SEPARATOR, this.layout.getX(),
 				this.layout.getHeaderHeight() - 2, 0.0F, 0.0F, this.width, 2, 32, 2);
