@@ -33,5 +33,5 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v7
       with:
-        name: mcwifipnp-artifacts
+        name: shyfrp-artifacts
         path: '**/build/libs/*.jar'
