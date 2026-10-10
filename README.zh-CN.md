@@ -26,10 +26,6 @@
 
 **Quilt: [Quilt Loader](https://quiltmc.org/install/), [QFAPI/QSL](https://modrinth.com/mod/qsl)**.
 
-**Forge: [Forge](https://files.minecraftforge.net/net/minecraftforge/forge/)**.
-
-**NeoForge: [NeoForge](https://projects.neoforged.net/neoforged/neoforge/)**.
-
 ## 下载
 
 CurseForge : [https://www.curseforge.com/minecraft/mc-mods/mcwifipnp](https://www.curseforge.com/minecraft/mc-mods/mcwifipnp)
@@ -102,7 +98,6 @@ cd mcwifipnp
 .\gradlew.bat build
 .\gradlew.bat :fabric:runClient
 ```
-将`fabric`替换为`forge`, `neoforge`, 或者 `quilt`可以构建对应的jar。
 
 ### Eclipse
 在 Eclipse 中将直接将根文件夹作为gradle项目导入就以开始开发。

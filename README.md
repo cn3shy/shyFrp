@@ -26,10 +26,6 @@
 
 **Quilt: [Quilt Loader](https://quiltmc.org/install/), [QFAPI/QSL](https://modrinth.com/mod/qsl)**.
 
-**Forge: [Forge](https://files.minecraftforge.net/net/minecraftforge/forge/)**.
-
-**NeoForge: [NeoForge](https://projects.neoforged.net/neoforged/neoforge/)**.
-
 ## Download
 
 CurseForge : [https://www.curseforge.com/minecraft/mc-mods/mcwifipnp](https://www.curseforge.com/minecraft/mc-mods/mcwifipnp)
@@ -102,7 +98,6 @@ cd mcwifipnp
 .\gradlew.bat build
 .\gradlew.bat :fabric:runClient
 ```
-Replace `fabric` with `forge`, `neoforge`, or `quilt` to build the corresponding artifacts.
 
 ### Eclipse
 Import the root folder as a gradle project in Eclipse to start the development.
