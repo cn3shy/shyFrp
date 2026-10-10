@@ -530,7 +530,8 @@ public class WorldOptionsScreenNew extends Screen implements HasGamemasterPermis
 		this.frpTokenEdit.setMaxLength(256);
 		this.frpTokenEdit.setValue(frpCfg.token);
 		this.frpTokenEdit.setTooltip(Tooltip.create(Component.translatable("mcwifipnp.frp.token.info")));
-		this.frpTokenEdit.setFormatter(value -> "●".repeat(value.length()));
+		this.frpTokenEdit.addFormatter(
+				(value, cursorPos) -> Component.literal("●".repeat(value.length())).getVisualOrderText());
 		this.frpTokenEdit.setResponder(value -> {
 			FrpConfig.get().token = value;
 			FrpConfig.get().save();
